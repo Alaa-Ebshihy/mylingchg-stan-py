@@ -8,8 +8,12 @@ from multiprocessing import Process, Queue
 from nltk.corpus import stopwords
 
 import ioutils
-from cooccurrence import matstore
+#from cooccurrence import matstore
+from representations import sparse_io_ref
 
+"""
+This can be called after indexmerge and runmerge
+"""
 def merge(years, out_pref, out_dir):
     word_freqs = collections.defaultdict(dict)
     word_lists = {}
@@ -42,7 +46,7 @@ def main(proc_num, queue, out_pref, out_dir, in_dir, index, freq_thresh, lang):
         stop_set = set(stopwords.words(lang))
         word_freqs = {}
         print "Loading mat for year", year
-        year_mat = matstore.retrieve_mat_as_coo(in_dir + str(year) + ".bin")
+        year_mat = sparse_io_ref.retrieve_mat_as_coo(in_dir + str(year) + ".bin")
         year_mat = year_mat.tocsr()
         year_mat = year_mat / year_mat.sum()
         print "Processing data for year", year

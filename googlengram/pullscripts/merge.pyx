@@ -3,8 +3,10 @@ import os
 import random
 from multiprocessing import Process, Lock
 
-from representations import sparse_io
+from representations import sparse_io_ref
 import ioutils
+import indexing
+#from representations.sparse_io import export_mat_from_dict
 
 def main(proc_num, lock, out_dir, in_dir, years):
     print proc_num, "Start loop"
@@ -36,7 +38,7 @@ def main(proc_num, lock, out_dir, in_dir, years):
             chunk_name = in_dir + str(chunk_num) + "/" + str(year) + ".bin"
             if not os.path.isfile(chunk_name):
                 continue
-            chunk_counts = sparse_io.retrieve_mat_as_dict(chunk_name)
+            chunk_counts = sparse_io_ref.retrieve_mat_as_dict(chunk_name)
             chunk_index = ioutils.load_pickle(in_dir + str(chunk_num) + "/index.pkl") 
             chunk_index = list(chunk_index)
             for pair, count in chunk_counts.iteritems():
@@ -47,7 +49,7 @@ def main(proc_num, lock, out_dir, in_dir, years):
                 full_counts[new_pair] += count
         
         print proc_num, "Writing counts for year", year
-        sparse_io.export_mats_from_dicts({str(year) : full_counts}, out_dir)
+        sparse_io_ref.export_mats_from_dicts({str(year) : full_counts}, out_dir)
         ioutils.write_pickle(merged_index, out_dir + str(year) + "-index.pkl")
         ioutils.write_pickle(list(merged_index), out_dir + str(year) + "-list.pkl")
 

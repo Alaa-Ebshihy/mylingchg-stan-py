@@ -1,4 +1,6 @@
 import argparse
+#import pyximport
+#pyximport.install()
 from googlengram.pullscripts.merge import run_parallel
 
 if __name__ == '__main__':
