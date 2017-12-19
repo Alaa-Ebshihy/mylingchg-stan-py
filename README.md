@@ -81,3 +81,16 @@ Core dependencies:
   * statsmodels: http://statsmodels.sourceforge.net/
 
 You will also need Juptyer/IPython to run any IPython notebooks.
+
+## Setup
+
+run the command
+`python setup.py build_ext --inplace`
+
+## How to deal with different modules:
+
+* `googlengrams`
+
+each output is input to subsequent stage
+run `unzipandsplit.py` --> `python unzipandsplit.py ~/Masters/Thesis/Data/5-gram/test ~/Masters/Thesis/Data/5-gram/test 2`
+run `gramgrap.py` --> `python gramgrab.py /Users/alaa-elebshihy/Masters/Thesis/Data/5-gram/unzipped 5-gram 2 1`
