@@ -33,7 +33,7 @@ def run_parallel(num_processes, in_dir, out_dir):
         if not os.path.isfile(in_dir + "/" + zipped_file) or not zipped_file.endswith((".gz")):
             continue
         queue.put(zipped_file)
-    
+
     procs = [Process(target=split_main, args=[i, queue, in_dir, out_dir]) for i in range(num_processes)]
     for p in procs:
         p.start()

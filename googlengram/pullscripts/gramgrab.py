@@ -59,13 +59,15 @@ def main(proc_num, queue, out_dir, download_dir, context_size):
         sparse_io_ref.export_mats_from_dicts(year_counters, loc_dir)
         ioutils.write_pickle(index, loc_dir + "index.pkl")
 
-def run_parallel(num_processes, root_dir, source, context_size):
+def run_parallel(num_processes, root_dir, out_dir, context_size):
     queue = Queue()
-    download_dir = root_dir + '/' + source + '/raw/'
-    out_dir = root_dir + '/' + source + '/c' + str(context_size) + '/raw/'
+    download_dir = root_dir + '/'
+    out_dir = out_dir + '/c' + str(context_size) + '/raw/'
     ioutils.mkdir(out_dir)
 
     for name in os.listdir(download_dir):
+        if name == ".DS_Store":
+            continue
         queue.put(name)
     procs = [Process(target=main, args=[i, queue, out_dir, download_dir, context_size]) for i in range(num_processes)]
     for p in procs:
@@ -77,8 +79,9 @@ def run_parallel(num_processes, root_dir, source, context_size):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Parses 5gram data into co-occurrence matrices")
     parser.add_argument("root_dir", help="root directory where data lives")
-    parser.add_argument("source", help="source dataset to pull from (must be available on the N-Grams website")
+    #parser.add_argument("source", help="source dataset to pull from (must be available on the N-Grams website")
+    parser.add_argument("out_dir", help="directory where data will be stored")
     parser.add_argument("context_size", type=int, help="Size of context window. Currently only size 2 and 4 are supported.")
     parser.add_argument("num_procs", type=int, help="number of processes to spawn")
     args = parser.parse_args()
-    run_parallel(args.num_procs, args.root_dir, args.source, args.context_size) 
+    run_parallel(args.num_procs, args.root_dir, args.out_dir, args.context_size) 

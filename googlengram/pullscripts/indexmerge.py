@@ -4,7 +4,7 @@ import ioutils
 
 from googlengram import indexing
 
-YEARS = range(1800, 2001)
+YEARS = range(1700, 2013)
 
 """
 This can be called after runmearge.py for the merged data

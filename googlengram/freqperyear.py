@@ -19,10 +19,14 @@ def merge(years, out_pref, out_dir):
     word_lists = {}
     word_set = set([])
     for year in years:
+        if not os.path.isfile(out_dir + str(year) + "tmp.pkl"):
+            continue
         word_lists[year] = ioutils.load_pickle(out_dir + str(year) + "tmp.pkl")
         word_set = word_set.union(set(word_lists[year]))
         os.remove(out_dir + str(year) + "tmp.pkl")
     for year in years:
+        if not os.path.isfile(out_dir + str(year) + "freqstmp.pkl"):
+            continue
         year_freqs= ioutils.load_pickle(out_dir + str(year) + "freqstmp.pkl")
         for word in word_set:
             if word not in year_freqs:
@@ -46,7 +50,11 @@ def main(proc_num, queue, out_pref, out_dir, in_dir, index, freq_thresh, lang):
         stop_set = set(stopwords.words(lang))
         word_freqs = {}
         print "Loading mat for year", year
-        year_mat = sparse_io_ref.retrieve_mat_as_coo(in_dir + str(year) + ".bin")
+        try:
+            year_mat = sparse_io_ref.retrieve_mat_as_coo(in_dir + str(year) + ".bin")
+        except (TypeError, ValueError):
+            continue
+        #year_mat = sparse_io_ref.retrieve_mat_as_coo(in_dir + str(year) + ".bin")
         year_mat = year_mat.tocsr()
         year_mat = year_mat / year_mat.sum()
         print "Processing data for year", year
