@@ -6,7 +6,7 @@ from multiprocessing import Process, Queue
 from Queue import Empty
 
 import ioutils
-from vecanalysis.representations.explicit import Explicit
+from representations.explicit import Explicit
 from statutils.fastfreqdist import CachedFreqDist
 SAMPLE_MAX = 1e9
 
@@ -21,7 +21,7 @@ def worker(proc_num, queue, out_dir, in_dir, count_dir, valid_words, num_words, 
         year_words = valid_words[year][:num_words]
         count_words = set(ioutils.words_above_count(count_dir, year, min_count))
         freq = CachedFreqDist(ioutils.load_pickle(count_dir + str(year) + "-counts.pkl"))
-        use_words = list(count_words.intersection(year_words)) 
+        use_words = list(count_words.intersection(year_words))
         embed = embed.get_subembed(use_words, restrict_context=True)
         sample_corr = min(SAMPLE_MAX / freq.N(), 1.0)
         print "Sample correction..", sample_corr
@@ -71,7 +71,7 @@ if __name__ == '__main__':
     parser.add_argument("out_dir")
     parser.add_argument("in_dir")
     parser.add_argument("count_dir")
-    parser.add_argument("word_file")
+    parser.add_argument("word_file", help="file maps from year to word list (the output of freqperyear)")
     parser.add_argument("--workers", type=int, default=10)
     parser.add_argument("--num-words", type=int, default=None)
     parser.add_argument("--start-year", type=int, help="start year (inclusive)", default=1800)
