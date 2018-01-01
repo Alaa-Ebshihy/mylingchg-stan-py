@@ -51,7 +51,8 @@ def worker(proc_num, queue, out_dir, in_dir, count_dir, valid_words, num_words, 
                 if not word in count_words:
                     print >>fp, word.encode("utf-8"), 1
                 else:
-                    print >>fp, word.encode("utf-8"), int(mat[embed.wi[word], :].sum())
+                    if word in embed.wi:
+                        print >>fp, word.encode("utf-8"), int(mat[embed.wi[word], :].sum())
         print "shuf " + out_dir + str(year) + ".tmp.txt" " > " + out_dir + str(year) + ".txt" 
         os.system("shuf " + out_dir + str(year) + ".tmp.txt" + " > " + out_dir + str(year) + ".txt")
         os.remove(out_dir + str(year) + ".tmp.txt")

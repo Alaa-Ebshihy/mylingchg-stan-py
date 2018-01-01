@@ -11,10 +11,10 @@ def train_years(years, in_dir, out_dir, dim, workers, sequential):
     for i, year in enumerate(years):
         print "Running year", year
         if i == 0 or not sequential:
-            subprocess.call(['./sgns/hyperwords/word2vecf/word2vecf', 
-                    '-output', out_dir + SAVE_FILE.format(year=year) + "-w",
-                    '-dumpcv', out_dir + SAVE_FILE.format(year=year) + "-c",
-                    '-threads', str(workers), 
+            subprocess.call(['./hyperwords/word2vecf/word2vecf',
+                    '-output', out_dir + SAVE_FILE.format(year=year) + "-w.txt",
+                    '-dumpcv', out_dir + SAVE_FILE.format(year=year) + "-c.txt",
+                    '-threads', str(workers),
                     '-train', in_dir + INPUT_FILE.format(year=year),
                     '-size', str(dim),
                     '-sample', '0',
@@ -23,12 +23,12 @@ def train_years(years, in_dir, out_dir, dim, workers, sequential):
                     '-cvocab', in_dir + VOCAB_FILE.format(year=year),
                     '-verbose', '2'])
         else:
-            subprocess.call(['./sgns/hyperwords/word2vecf/word2vecf', 
-                    '-output', out_dir + SAVE_FILE.format(year=year) + "-w",
-                    '-dumpcv', out_dir + SAVE_FILE.format(year=year) + "-c",
+            subprocess.call(['./hyperwords/word2vecf/word2vecf',
+                    '-output', out_dir + SAVE_FILE.format(year=year) + "-w.txt",
+                    '-dumpcv', out_dir + SAVE_FILE.format(year=year) + "-c.txt",
                     '-w-init-file', out_dir + SAVE_FILE.format(year=years[i-1]) + "-w.bin",
                     '-c-init-file', out_dir + SAVE_FILE.format(year=years[i-1]) + "-c.bin",
-                    '-threads', str(workers), 
+                    '-threads', str(workers),
                     '-train', in_dir + INPUT_FILE.format(year=year),
                     '-size', str(dim),
                     '-sample', '0',
