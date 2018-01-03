@@ -1,5 +1,6 @@
 import re
 import os
+import subprocess
 import collections
 import argparse
 from multiprocessing import Process, Queue
@@ -33,9 +34,11 @@ def main(proc_num, queue, out_dir, download_dir, context_size, is_zipped):
         name = queue.get()
 
         if is_zipped:
+            if not name.endswith((".gz")):
+                continue
             print "Unzipping " + name + " ..."
             subprocess.call(['gunzip', '-f', download_dir + name, '-d'])
-            name = zipped_file.split(".gz")[0]
+            name = name.split(".gz")[0]
 
         loc_dir = out_dir + "/" + name + "/"
         ioutils.mkdir(loc_dir)
