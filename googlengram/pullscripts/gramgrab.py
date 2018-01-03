@@ -25,12 +25,18 @@ def update_count(ngram, target_ind, year, count, year_counters):
         year_counters[year][pair] += count
     return year_counters
 
-def main(proc_num, queue, out_dir, download_dir, context_size):
+def main(proc_num, queue, out_dir, download_dir, context_size, is_zipped):
     print proc_num, "Start loop"
     while True:
         if queue.empty():
             break
         name = queue.get()
+
+        if is_zipped:
+            print "Unzipping " + name + " ..."
+            subprocess.call(['gunzip', '-f', download_dir + name, '-d'])
+            name = zipped_file.split(".gz")[0]
+
         loc_dir = out_dir + "/" + name + "/"
         ioutils.mkdir(loc_dir)
 
@@ -58,8 +64,9 @@ def main(proc_num, queue, out_dir, download_dir, context_size):
         time.sleep(120 * random.random())
         sparse_io_ref.export_mats_from_dicts(year_counters, loc_dir)
         ioutils.write_pickle(index, loc_dir + "index.pkl")
+        os.remove(download_dir + name)
 
-def run_parallel(num_processes, root_dir, out_dir, context_size):
+def run_parallel(num_processes, root_dir, out_dir, context_size, is_zipped):
     queue = Queue()
     download_dir = root_dir + '/'
     out_dir = out_dir + '/c' + str(context_size) + '/raw/'
@@ -69,7 +76,7 @@ def run_parallel(num_processes, root_dir, out_dir, context_size):
         if name == ".DS_Store":
             continue
         queue.put(name)
-    procs = [Process(target=main, args=[i, queue, out_dir, download_dir, context_size]) for i in range(num_processes)]
+    procs = [Process(target=main, args=[i, queue, out_dir, download_dir, context_size, is_zipped]) for i in range(num_processes)]
     for p in procs:
         p.start()
     for p in procs:
@@ -83,5 +90,8 @@ if __name__ == '__main__':
     parser.add_argument("out_dir", help="directory where data will be stored")
     parser.add_argument("context_size", type=int, help="Size of context window. Currently only size 2 and 4 are supported.")
     parser.add_argument("num_procs", type=int, help="number of processes to spawn")
+    parser.add_argument("--is_zipped", type=int, default=0 , help="If 0 then the files are unzipped. Otherwise, the input files are zipped")
     args = parser.parse_args()
-    run_parallel(args.num_procs, args.root_dir, args.out_dir, args.context_size) 
+    is_zipped = False if args.is_zipped == 0 else True
+
+    run_parallel(args.num_procs, args.root_dir, args.out_dir, args.context_size, is_zipped)

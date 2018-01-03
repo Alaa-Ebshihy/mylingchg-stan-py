@@ -6,8 +6,8 @@ sudo apt-get install python-setuptools
 #install and upgrade pip
 sudo apt-get install python-pip
 pip install --upgrade pip
+export LC_ALL=C
 echo 'export LC_ALL=C' >> ~/.bashrc
-. ~/.bashrc
 
 #install requirements
 sudo pip install --no-cache-dir -r requirements.txt
@@ -19,4 +19,5 @@ sudo python setup.py build_ext --inplace
 ##update PYTHONPATH env variable
 echo 'export PYTHONPATH=/implementation/mylingchg-stan-py' >> ~/.bashrc
 echo 'export PYTHONPATH=$PYTHONPATH:/implementation/mylingchg-stan-py/googlengram' >> ~/.bashrc
-. ~/.bashrc
+#after finishing install call the following
+#. ~/.bashrc
