@@ -4,12 +4,12 @@ import collections
 from multiprocessing import Process, Queue
 from Queue import Empty
 
-from vecanalysis.representations.explicit import Explicit
-from cooccurrence.matstore import export_mat_from_dict
+from representations.explicit import Explicit
+from representations.sparse_io_ref import export_mat_from_dict
 from ioutils import mkdir, write_pickle, load_pickle
 
 def get_index(merged_index, year_list, index):
-    word = year_list[index] 
+    word = year_list[index]
     if word in merged_index:
         new_index = merged_index[word]
     else:
@@ -25,7 +25,7 @@ def worker(proc_num, queue, out_dir, in_dir):
             break
 
         print "Processing decade", decade
-        counts = collections.defaultdict(int)       
+        counts = collections.defaultdict(int)
         for year in range(10):
             embed = Explicit.load(in_dir + str(decade + year) + ".bin", normalize=False)
             if year == 0:
@@ -64,4 +64,4 @@ if __name__ == '__main__':
     decades = range(args.start_year, args.end_year + 1, 10)
     decades.reverse()
     mkdir(args.out_dir)
-    run_parallel(args.num_procs, args.out_dir + "/",  args.in_dir + "/", decades)       
+    run_parallel(args.num_procs, args.out_dir + "/",  args.in_dir + "/", decades)
