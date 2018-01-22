@@ -19,7 +19,7 @@ def worker(proc_num, queue, out_dir, vocab_dir, coo_dir):
         vocab = load_vocabulary(year, vocab_dir)
 
         print proc_num, "Loading pairs for year", year
-        context_list = load_context(year, vocab_dir)
+        #context_list = load_context(year, vocab_dir)
 
         print proc_num, "Getting counts and matrix year", year
         embed = Explicit.load(coo_dir + str(year) + ".bin", normalize=False)
@@ -29,12 +29,12 @@ def worker(proc_num, queue, out_dir, vocab_dir, coo_dir):
 
         vocab_len = len(vocab)
         with open(out_dir + str(year) + "-pair_counts", "w") as fp:
-            for pair in context_list:
-                word = pair.split()[0]
-                context = pair.split()[1]
-                index_w = vocab[word]
-                index_c = vocab[context]
-                print >>fp, index_w, index_c, mat[embed.wi[word], embed.ci[context]]
+            with open(vocab_dir + str(year) + ".txt", "r") as fcp:
+                for pair in fcp:
+                    word = pair.split()[0]
+                    context = pair.split()[1]
+                    if (word in embed.wi) and (context in embed.ci) and (int(mat[embed.wi[word], embed.ci[context]]) <> 0):
+                        print >>fp, vocab[word], vocab[context], mat[embed.wi[word], embed.ci[context]]
 
 def load_vocabulary(year, vocab_dir):
     vocab = {}

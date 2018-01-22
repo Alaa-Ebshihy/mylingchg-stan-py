@@ -1,4 +1,3 @@
-from docopt import docopt
 import argparse
 from scipy.sparse import dok_matrix, csr_matrix
 import numpy as np
@@ -6,6 +5,10 @@ import random
 import struct
 import sys
 
+from multiprocessing import Process, Queue
+from Queue import Empty
+
+import ioutils
 
 def worker(proc_num, queue, out_dir, count_dir):
     print "counts2bin"
@@ -43,6 +46,7 @@ def run_parallel(num_procs, out_dir, count_dir, years):
     for p in procs:
         p.join()
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Computes various frequency statistics.")
     parser.add_argument("out_dir", help="output directory for bin count ngrams pairs")
@@ -54,4 +58,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     years = range(args.start_year, args.end_year + 1, args.year_inc)
     ioutils.mkdir(args.out_dir)
-    run_parallel(args.workers, args.out_dir + "/", args.vocab_dir + "/", args.coo_dir + "/", years)
+    run_parallel(args.workers, args.out_dir + "/", args.count_dir + "/", years)
