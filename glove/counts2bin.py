@@ -18,8 +18,8 @@ def worker(proc_num, queue, out_dir, count_dir):
 
         print proc_num, "Processing counts pairs for year", year
 
-        bin_file = open(out_dir + str(year) "-pair_counts.shuf.bin", 'wb')
-        with open(count_dir + str(year) "-pair_counts.shuf", 'r') as f:
+        bin_file = open(out_dir + str(year) + "-pair_counts.shuf.bin", 'wb')
+        with open(count_dir + str(year) + "-pair_counts.shuf", 'r') as f:
             counts_num = 0
             for line in f:
                 if counts_num % 1000 == 0:
