@@ -15,8 +15,11 @@ def worker(proc_num, queue, out_dir, vocab_dir, coo_dir):
         except Empty:
             break
 
-        print proc_num, "Loading vocabulary for year"
+        print proc_num, "Loading vocabulary for year", year
         vocab = load_vocabulary(year, vocab_dir)
+
+        print proc_num, "Loading pairs for year", year
+        context_list = load_context(year, vocab_dir)
 
         print proc_num, "Getting counts and matrix year", year
         embed = Explicit.load(coo_dir + str(year) + ".bin", normalize=False)
@@ -26,22 +29,32 @@ def worker(proc_num, queue, out_dir, vocab_dir, coo_dir):
 
         vocab_len = len(vocab)
         with open(out_dir + str(year) + "-pair_counts", "w") as fp:
-            for w in range (vocab_len):
-                for c in range (vocab_len):
-                    if int(mat[embed.wi[vocab[w]], embed.ci[vocab[c]]]) <> 0:
-                        print >>fp, w, c, (mat[embed.wi[vocab[w]], embed.ci[vocab[c]]])
+            for pair in context_list:
+                word = pair.split()[0]
+                context = pair.split()[1]
+                index_w = vocab[word]
+                index_c = vocab[context]
+                print >>fp, index_w, index_c, mat[embed.wi[word], embed.ci[context]]
 
 def load_vocabulary(year, vocab_dir):
-    vocab = []
+    vocab = {}
     with open(vocab_dir + str(year) + ".vocab") as f:
-        vocab = f.read().splitlines()
+        lines = f.read().splitlines()
+        vocab_list = [ line.split()[0] for line in lines]
+        vocab = {k: v for v, k in enumerate(vocab_list)}
     return vocab
+
+def load_context(year, vocab_dir):
+    context_list = []
+    with open(vocab_dir + str(year) + ".txt") as f:
+        context_list =  f.read().splitlines()
+    return context_list
 
 def run_parallel(num_procs, out_dir, vocab_dir, coo_dir, years):
     queue = Queue()
     for year in years:
         queue.put(year)
-    procs = [Process(target=worker, args=[i, queue, out_dir, vocab_dir, coo_dir, words]) for i in range(num_procs)]
+    procs = [Process(target=worker, args=[i, queue, out_dir, vocab_dir, coo_dir]) for i in range(num_procs)]
     for p in procs:
         p.start()
     for p in procs:
