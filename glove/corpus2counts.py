@@ -26,12 +26,12 @@ def worker(proc_num, queue, out_dir, vocab_dir, coo_dir):
 
         vocab_len = len(vocab)
         with open(out_dir + str(year) + "-pair_counts", "w") as fp:
-            for w in range vocab_len:
-                for c in range vocab_len:
-	        	    if int(mat[embed.wi[vocab[w]], embed.ci[vocab[c]]]) <> 0:
-                        print >>fp, w, c, mat[embed.wi[vocab[w]], embed.ci[vocab[c]]]
+            for w in range (vocab_len):
+                for c in range (vocab_len):
+                    if int(mat[embed.wi[vocab[w]], embed.ci[vocab[c]]]) <> 0:
+                        print >>fp, w, c, (mat[embed.wi[vocab[w]], embed.ci[vocab[c]]])
 
-def load_vocabulary(year, vocab_dir)
+def load_vocabulary(year, vocab_dir):
     vocab = []
     with open(vocab_dir + str(year) + ".vocab") as f:
         vocab = f.read().splitlines()
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Computes various frequency statistics.")
     parser.add_argument("out_dir", help="output directory for count ngrams pairs")
     parser.add_argument("vocab_dir", help="directory contains .vocab files to be used in training")
-    parser.add_argument("coo_dir", help="directory contains coocurrence data \{year\}.bin")
+    parser.add_argument("coo_dir", help="directory contains coocurrence data {year}.bin")
     parser.add_argument("--workers", type=int, default=10)
     parser.add_argument("--start-year", type=int, help="start year (inclusive)", default=1800)
     parser.add_argument("--end-year", type=int, help="end year (inclusive)", default=2000)
