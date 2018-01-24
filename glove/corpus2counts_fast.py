@@ -2,12 +2,15 @@ import argparse
 import os
 import numpy as np
 
+from collections import Counter
+
 from multiprocessing import Process, Queue
 from Queue import Empty
 
 import ioutils
 from representations.explicit import Explicit
 
+MAX_PAIR_COUNT = 15000000
 def worker(proc_num, queue, out_dir, vocab_dir, coo_dir):
     while True:
         try:
@@ -27,14 +30,46 @@ def worker(proc_num, queue, out_dir, vocab_dir, coo_dir):
 
         print proc_num, "Outputing count pairs for year", year
 
-        vocab_len = len(vocab)
-        with open(out_dir + str(year) + "-pair_counts.shuf", "w") as fp:
-            with open(vocab_dir + str(year) + ".txt", "r") as fcp:
-                for pair in fcp:
-                    word = pair.split()[0]
-                    context = pair.split()[1]
-                    if (word in embed.wi) and (context in embed.ci) and (int(mat[embed.wi[word], embed.ci[context]]) <> 0):
-                        print >>fp, vocab[word], vocab[context], mat[embed.wi[word], embed.ci[context]]
+        coo_dict = {}
+        count_tmp_files = 0
+        with open(vocab_dir + str(year) + ".txt", "r") as fcp:
+            count_tmp_pairs = 0
+            for pair in fcp:
+                count_tmp_pairs += 1
+                word = pair.split()[0]
+                context = pair.split()[1]
+                if (word in embed.wi) and (context in embed.ci) and (int(mat[embed.wi[word], embed.ci[context]]) <> 0):
+                    if vocab[word] in coo_dict:
+                        coo_dict[vocab[word]].update({vocab[context]: mat[embed.wi[word], embed.ci[context]]})
+                    else:
+                        coo_dict[vocab[word]] = Counter({vocab[context]: mat[embed.wi[word], embed.ci[context]]})
+                if count_tmp_pairs == MAX_PAIR_COUNT:
+                    print proc_num, "Writing temp file", count_tmp_files, "for year", year
+                    ioutils.write_pickle(coo_dict, out_dir + str(year) + "-pair_counts-tmp-" + str(count_tmp_files) + ".pkl")
+                    count_tmp_files += 1;
+                    count_tmp_pairs = 0;
+                    coo_dict.clear()
+            ioutils.write_pickle(coo_dict, out_dir + str(year) + "-pair_counts-tmp-" + str(count_tmp_files) + ".pkl")
+            count_tmp_files += 1;
+            count_tmp_pairs = 0;
+            coo_dict.clear()
+
+        print proc_num, "Merging temp count for year", year
+        merge_tmp_count(out_dir, count_tmp_files, year)
+
+def merge_tmp_count(out_dir, count_tmp_files, year):
+    with open(out_dir + str(year) + "-pair_counts.tmp", "w") as fp:
+        for i in range (count_tmp_files):
+            coo_dict = ioutils.load_pickle(out_dir + str(year) + "-pair_counts-tmp-" + str(i) + ".pkl")
+            for word_idx in coo_dict:
+                context_keys = coo_dict[word_idx].keys()
+                for context_idx in context_keys:
+                    print >>fp, word_idx, context_idx, coo_dict[word_idx][context_idx]
+            os.remove(out_dir + str(year) + "-pair_counts-tmp-" + str(i) + ".pkl")
+            coo_dict.clear()
+        print "shuf " + out_dir + str(year) + "-pair_counts.tmp" + " > " + out_dir + str(year) + "-pair_counts.shuf"
+        os.system("shuf " + out_dir + str(year) + "-pair_counts.tmp" + " > " + out_dir + str(year) + "-pair_counts.shuf")
+        os.remove(out_dir + str(year) + "-pair_counts.tmp" + str(i) + ".pkl")
 
 def load_vocabulary(year, vocab_dir):
     vocab = {}
