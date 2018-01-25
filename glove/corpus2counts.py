@@ -31,8 +31,8 @@ def worker(proc_num, queue, out_dir, vocab_dir, coo_dir):
         with open(out_dir + str(year) + "-pair_counts.shuf", "w") as fp:
             with open(vocab_dir + str(year) + ".txt", "r") as fcp:
                 for pair in fcp:
-                    word = pair.split()[0]
-                    context = pair.split()[1]
+                    word = pair.split()[0].decode("utf-8")
+                    context = pair.split()[1].decode("utf-8")
                     if (word in embed.wi) and (context in embed.ci) and (int(mat[embed.wi[word], embed.ci[context]]) <> 0):
                         print >>fp, vocab[word], vocab[context], mat[embed.wi[word], embed.ci[context]]
 
