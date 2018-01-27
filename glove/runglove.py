@@ -40,7 +40,7 @@ if __name__ == "__main__":
     parser.add_argument("--end-year", type=int, default=2000)
     parser.add_argument("--year-inc", type=int, default=1)
     args = parser.parse_args()
-    out_dir = args.out_dir + "/" + str(args.dim) + "/"
+    out_dir = args.out_dir + "/" + str(args.dim) + "/" + str(args.iter) + "/"
     mkdir(out_dir)
     years = range(args.start_year, args.end_year + 1, args.year_inc)
     train_years(years, args.vocab_dir + "/", args.count_dir + "/", out_dir, args.dim, args.iter, args.workers, args.alpha, args.x_max, args.eta)
