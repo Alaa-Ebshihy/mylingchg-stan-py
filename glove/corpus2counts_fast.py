@@ -69,7 +69,7 @@ def merge_tmp_count(out_dir, count_tmp_files, year):
             coo_dict.clear()
         print "shuf " + out_dir + str(year) + "-pair_counts.tmp" + " > " + out_dir + str(year) + "-pair_counts.shuf"
         os.system("shuf " + out_dir + str(year) + "-pair_counts.tmp" + " > " + out_dir + str(year) + "-pair_counts.shuf")
-        os.remove(out_dir + str(year) + "-pair_counts.tmp" + str(i) + ".pkl")
+        os.remove(out_dir + str(year) + "-pair_counts.tmp")
 
 def load_vocabulary(year, vocab_dir):
     vocab = {}
