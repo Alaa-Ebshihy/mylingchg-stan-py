@@ -8,6 +8,11 @@ from Queue import Empty
 import ioutils
 from representations.explicit import Explicit
 
+from collections import Counter
+from math import sqrt
+from sys import getsizeof
+import cPickle as pickle
+
 def worker(proc_num, queue, out_dir, vocab_dir, memory_size):
     while True:
         try:
