@@ -26,3 +26,12 @@ def load_vocabulary(mat, path):
     iw = vocab[:mat.shape[0]]
     ic = vocab[:mat.shape[1]]
     return iw, ic
+
+def save_count_vocabulary(path, vocab):
+    with open(path, 'w') as f:
+        if type(vocab) is dict:
+            for w, c in vocab.iteritems():
+                f.write(w+ " "+ str(c) + "\n")
+        else:
+            for w, c in vocab:
+                f.write(w+ " "+ str(c) + "\n")

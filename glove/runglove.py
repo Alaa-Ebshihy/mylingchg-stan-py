@@ -4,6 +4,8 @@ from argparse import ArgumentParser
 from ioutils import mkdir
 
 VOCAB_FILE = "{year:d}.vocab"
+WORD_VOCAB_FILE = "{year:d}-w.vocab"
+CONTEXT_VOCAB_FILE = "{year:d}-c.vocab"
 INPUT_FILE = "{year:d}-pair_counts.shuf.bin"
 SAVE_FILE = "{year:d}"
 
@@ -21,8 +23,8 @@ def train_years(years, vocab_dir, count_dir, out_dir, dim, iter, workers, alpha,
                 '-x-max', str(x_max),
                 '-eta', str(eta),
                 '-vocab-file', vocab_dir + VOCAB_FILE.format(year=year),
-                '-words-file', vocab_dir + VOCAB_FILE.format(year=year),
-                '-contexts-file', vocab_dir + VOCAB_FILE.format(year=year),
+                '-words-file', vocab_dir + WORD_VOCAB_FILE.format(year=year),
+                '-contexts-file', vocab_dir + CONTEXT_VOCAB_FILE.format(year=year),
                 '-verbose', '2'])
 
 if __name__ == "__main__":

@@ -6,7 +6,6 @@ from multiprocessing import Process, Queue
 from Queue import Empty
 
 import ioutils
-from representations.explicit import Explicit
 
 from collections import Counter
 from math import sqrt
@@ -21,8 +20,8 @@ def worker(proc_num, queue, out_dir, vocab_dir, memory_size):
             break
 
         print proc_num, "Loading vocabulary for year", year
-        wi, iw =load_vocabulary(year, vocab_dir)
-        ci, ic = load_vocabulary(year, vocab_dir)
+        wi, iw =load_vocabulary(vocab_dir + str(year) + "-w.vocab")
+        ci, ic = load_vocabulary(vocab_dir + str(year) + "-c.vocab")
         memory_size = memory_size * 1000**3
         D = {} #store co-occurrence matrix in dictionary
         tmpfile_num = 0
@@ -111,8 +110,8 @@ def worker(proc_num, queue, out_dir, vocab_dir, memory_size):
     print proc_num, "Finished"
 
 
-def load_vocabulary(year, vocab_dir):
-    with open(vocab_dir + str(year) + ".vocab") as f:
+def load_vocabulary(vocab_path):
+    with open(vocab_path) as f:
         vocab = [line.strip().split()[0] for line in f if len(line) > 0]
     return dict([(a, i) for i, a in enumerate(vocab)]), vocab
 
