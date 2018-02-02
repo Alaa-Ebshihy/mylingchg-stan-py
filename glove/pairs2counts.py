@@ -20,8 +20,8 @@ def worker(proc_num, queue, out_dir, vocab_dir, memory_size):
             break
 
         print proc_num, "Loading vocabulary for year", year
-        wi, iw =load_vocabulary(vocab_dir + str(year) + "-w.vocab")
-        ci, ic = load_vocabulary(vocab_dir + str(year) + "-c.vocab")
+        wi, iw =load_vocabulary(vocab_dir + str(year) + ".vocab")
+        ci, ic = load_vocabulary(vocab_dir + str(year) + ".vocab")
         memory_size = memory_size * 1000**3
         D = {} #store co-occurrence matrix in dictionary
         tmpfile_num = 0

@@ -9,7 +9,7 @@ CONTEXT_VOCAB_FILE = "{year:d}-c.vocab"
 INPUT_FILE = "{year:d}-pair_counts.shuf.bin"
 SAVE_FILE = "{year:d}"
 
-def train_years(years, vocab_dir, count_dir, out_dir, dim, iter, workers, alpha, x_max, eta):
+def train_years(years, vocab_dir, count_dir, out_dir, dim, iter, workers, alpha, x_max, eta, model):
     for i, year in enumerate(years):
         print "Running year", year
         subprocess.call(['./glovef/build/glove',
@@ -22,9 +22,11 @@ def train_years(years, vocab_dir, count_dir, out_dir, dim, iter, workers, alpha,
                 '-alpha', str(alpha),
                 '-x-max', str(x_max),
                 '-eta', str(eta),
+                '-model', str(model),
+                '-checkpoint-every', '5',
                 '-vocab-file', vocab_dir + VOCAB_FILE.format(year=year),
-                '-words-file', vocab_dir + WORD_VOCAB_FILE.format(year=year),
-                '-contexts-file', vocab_dir + CONTEXT_VOCAB_FILE.format(year=year),
+                '-words-file', vocab_dir + VOCAB_FILE.format(year=year),
+                '-contexts-file', vocab_dir + VOCAB_FILE.format(year=year),
                 '-verbose', '2'])
 
 if __name__ == "__main__":
@@ -34,6 +36,7 @@ if __name__ == "__main__":
     parser.add_argument("out_dir")
     parser.add_argument("--dim", type=int, default=300)
     parser.add_argument("--iter", type=int, default=25)
+    parser.add_argument("--model", type=int, default=2)
     parser.add_argument("--workers", type=int, default=50)
     parser.add_argument("--alpha", type=float, default=0.75)
     parser.add_argument("--x-max", type=float, default=100.0)
@@ -42,8 +45,8 @@ if __name__ == "__main__":
     parser.add_argument("--end-year", type=int, default=2000)
     parser.add_argument("--year-inc", type=int, default=1)
     args = parser.parse_args()
-    out_dir = args.out_dir + "/" + str(args.dim) + "/" + str(args.iter) + "/"
+    out_dir = args.out_dir + "/" + str(args.dim) + "/" + "model-" + str(args.model) + "/" + str(args.iter) + "/"
     mkdir(out_dir)
     years = range(args.start_year, args.end_year + 1, args.year_inc)
-    train_years(years, args.vocab_dir + "/", args.count_dir + "/", out_dir, args.dim, args.iter, args.workers, args.alpha, args.x_max, args.eta)
+    train_years(years, args.vocab_dir + "/", args.count_dir + "/", out_dir, args.dim, args.iter, args.workers, args.alpha, args.x_max, args.eta, args.model)
 
