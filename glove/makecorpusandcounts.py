@@ -33,18 +33,20 @@ def worker(proc_num, queue, out_dir, in_dir, count_dir, valid_words, num_words, 
             for i in xrange(len(mat.data)):
                 if i % 10000 == 0:
                     print "Done ", i, "of", len(mat.data)
-                word = embed.iw[mat.row[i]]
-                context = embed.ic[mat.col[i]]
-                if sample != 0:
-                    prop_keep = min(np.sqrt(sample / freq.freq(word)), 1.0)
-                    prop_keep *= min(np.sqrt(sample / freq.freq(context)), 1.0)
-                else:
-                    prop_keep = 1.0
-                word = word.encode("utf-8")
-                context = context.encode("utf-8")
                 word_context_count = int(mat.data[i])
-                fp.write(word + " " + context + " " + str(word_context_count) + "\n")
-                fpc.write(vocab_dict[word] + " " + vocab_dict[context] + " " + str(word_context_count) + "\n" )
+                if word_context_count <> 0:
+                    word = embed.iw[mat.row[i]]
+                    context = embed.ic[mat.col[i]]
+                    if sample != 0:
+                        prop_keep = min(np.sqrt(sample / freq.freq(word)), 1.0)
+                        prop_keep *= min(np.sqrt(sample / freq.freq(context)), 1.0)
+                    else:
+                        prop_keep = 1.0
+                    fpc.write(str(vocab_dict[word]) + " " + str(vocab_dict[context]) + " " + str(word_context_count) + "\n" )
+                    word = word.encode("utf-8")
+                    context = context.encode("utf-8")
+                    fp.write(word + " " + context + " " + str(word_context_count) + "\n")
+
 
                 #for j in xrange(int(mat.data[i] * prop_keep)):
                 #fp.write(line)
@@ -52,11 +54,11 @@ def worker(proc_num, queue, out_dir, in_dir, count_dir, valid_words, num_words, 
         print proc_num, "Outputing vocab for year", year
         with open(out_dir + str(year) + ".vocab", "w") as fp:
             for word in year_words:
-                if not word in count_words:
+                if not word in count_words and not word in embed.wi:
                     print >>fp, word.encode("utf-8"), 1
                 else:
-                    #if word in embed.wi:
                     print >>fp, word.encode("utf-8"), int(mat[embed.wi[word], :].sum())
+
         print "shuf " + out_dir + str(year) + "-pair_counts.tmp" " > " + out_dir + str(year) + "-pair_counts.shuf"
         os.system("shuf " + out_dir + str(year) + "-pair_counts.tmp" + " > " + out_dir + str(year) + "-pair_counts.shuf")
         os.remove(out_dir + str(year) + "-pair_counts.tmp")
