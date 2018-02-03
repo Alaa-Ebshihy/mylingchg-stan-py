@@ -17,6 +17,6 @@ def text2numpy(dir, freqs, year):
             line = line.strip().split()
             iw.append(line[0].decode("utf-8"))
             if freqs[iw[-1]] >= 500:
-                w_mat[i,:] = np.array(map(float, line[1:]))
+                w_mat[i,:] = np.array(map(float, line[1:dim+1]))
     np.save(dir + str(year) + "-w.npy", w_mat)
     write_pickle(iw, dir + str(year) + "-vocab.pkl")
