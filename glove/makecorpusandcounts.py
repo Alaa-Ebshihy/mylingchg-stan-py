@@ -54,7 +54,7 @@ def worker(proc_num, queue, out_dir, in_dir, count_dir, valid_words, num_words, 
         print proc_num, "Outputing vocab for year", year
         with open(out_dir + str(year) + ".vocab", "w") as fp:
             for word in year_words:
-                if not word in count_words and not word in embed.wi:
+                if not word in count_words or not word in embed.wi:
                     print >>fp, word.encode("utf-8"), 1
                 else:
                     print >>fp, word.encode("utf-8"), int(mat[embed.wi[word], :].sum())
