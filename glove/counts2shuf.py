@@ -6,6 +6,8 @@ from sys import getsizeof
 import sys
 import os
 
+from multiprocessing import Process, Queue
+from Queue import Empty
 
 def worker(proc_num, queue, counts_dir, memory_size):
     while True:
@@ -94,7 +96,7 @@ def run_parallel(num_procs, counts_dir, memory_size, years):
     queue = Queue()
     for year in years:
         queue.put(year)
-    procs = [Process(target=worker, args=[i, queue, out_dir, vocab_dir, memory_size]) for i in range(num_procs)]
+    procs = [Process(target=worker, args=[i, queue, counts_dir, memory_size]) for i in range(num_procs)]
     for p in procs:
         p.start()
     for p in procs:
@@ -110,5 +112,4 @@ if __name__ == '__main__':
     parser.add_argument("--year-inc", type=int, help="end year (inclusive)", default=1)
     args = parser.parse_args()
     years = range(args.start_year, args.end_year + 1, args.year_inc)
-    ioutils.mkdir(args.out_dir)
-    run_parallel(args.workers, args.out_dir + "/", args.memory_size, years)
+    run_parallel(args.workers, args.counts_dir + "/", args.memory_size, years)
