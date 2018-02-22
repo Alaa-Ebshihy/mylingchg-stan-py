@@ -11,7 +11,7 @@ def worker(proc_num, queue, vec_path):
         year = queue.get()
         print "Loading data..", year
 #        time.sleep(120 * random.random())
-        text2numpy(vec_path + "-", year, ".vec")
+        text2numpy(vec_path, year, ".vec")
 
 def text2numpy(vec_path, year, extension):
     iw = []

@@ -9,9 +9,9 @@ MODEL_FILE = "{year:d}-w.bin"
 def main(year, vec_dir, out_file, queries_file, dim):
     print "Print word vectors for year", year
     vocab_size = os.popen("wc -l " + queries_file + " | awk '{ print $1 }'").read().strip()
-    os.system("echo '" + vocab_size + " " + str(dim) + "' > " + out_file + "-" + str(year) + ".vec")
+    os.system("echo '" + vocab_size + " " + str(dim) + "' > " + out_file + "-" + str(year) + "-w.vec")
     os.system("./fasttextf/fasttext print-word-vectors " + vec_dir + MODEL_FILE.format(year=year)
-        + " < " + queries_file + " >> " + out_file + "-" + str(year) + ".vec")
+        + " < " + queries_file + " >> " + out_file + "-" + str(year) + "-w.vec")
 
 if __name__ == "__main__":
     parser = ArgumentParser("print word vectors given year and queries file")
