@@ -89,7 +89,7 @@ class LocalLinearRegression(BaseEstimator):
     '''
 
     def predict(self, X):
-        neighbors = self.nn.kneighbors(X)
+        neighbors = self.nn.kneighbors([X])
         distances = neighbors[0][0]
         neighbor_indices = neighbors[1][0]
         local_X = self.X.take(neighbor_indices, axis=0)

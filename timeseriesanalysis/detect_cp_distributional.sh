@@ -24,3 +24,21 @@ echo "Predictors will be stored in", $WORKING_DIR/predictors
 arr=("$INPUT_DIR/*.model")
 ((FINALTIMEPOINT=$ENDTIMEPOINT-$STEP))
 parallel -j${WORKERS} python learn_map.py -k ${KNN} -f $WORKING_DIR/predictors/{/.}.predictor -o {} -n {//}/${FINALTIMEPOINT}_*.model -m $MODEL_FAMILY ::: $arr
+
+WORDS_FILE=${FILTER_VOCAB_FILE}
+
+echo "Computing displacements"
+mkdir -p $WORKING_DIR/displacements/
+export MKL_NUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+export OMP_NUM_THREADS=1
+export MKL_DYNAMIC=FALSE
+python embedding_displacements.py -f $WORDS_FILE -d $INPUT_DIR/ -p $WORKING_DIR/predictors/ -os words -es ".model" -ps ".predictor" -sy $STARTTIMEPOINT -ey $ENDTIMEPOINT -s $STEP -e $EMBEDDINGS_TYPE -o $WORKING_DIR/displacements/ -workers ${WORKERS}
+
+echo "Creating time series"
+mkdir -p $WORKING_DIR/timeseries/
+python tsconstruction/dump_timeseries.py -f $WORKING_DIR/displacements/timeseries_s_t_words.pkl -s $WORKING_DIR/timeseries/source.csv -e $WORKING_DIR/timeseries/dest.csv -m $STARTTIMEPOINT -n $ENDTIMEPOINT -st $STEP -me "polar" -metric "cosine" -workers ${WORKERS}
+
+python detect_changepoints_word_ts.py -f $WORKING_DIR/timeseries/source.csv -v $FILTER_VOCAB_FILE -p $OUTPUT_DIR/pvals.csv -n $OUTPUT_DIR/samples.csv -c $STARTTIMEPOINT -w ${WORKERS} -b ${BOOTSTRAP} -t ${THRESHOLD}
+
+python demonstrate_cp.py -f $WORKING_DIR/timeseries/source.csv -p $OUTPUT_DIR/pvals_1.csv -n $OUTPUT_DIR/samples_1.csv -c $STARTTIMEPOINT -w ${WORKERS} -b ${BOOTSTRAP} -t ${THRESHOLD}
