@@ -14,8 +14,7 @@ import pandas as pd
 import more_itertools
 from joblib import Parallel, delayed
 
-import langchangetrack
-from langchangetrack.utils.dummy_regressor import DummyRegressor
+from dummy_regressor import DummyRegressor
 import gensim
 
 from tsconstruction.displacements import Displacements

@@ -121,7 +121,8 @@ def get_cp_pval(pvalue_df_row, zscore_df, threshold=0.0):
     assert(len(zscore_series) == len(row_series))
 
     # Get all the indices where zscore exceeds a threshold
-    sel_idx = np.where(zscore_series > threshold)[0]
+    sel_idx = np.where(np.array([e > threshold if ~np.isnan(e) else False for e in zscore_series], dtype=bool))[0]
+    #sel_idx = np.where(zscore_series > threshold)[0]
     # If there are no such indices return NAN
     if not len(sel_idx):
         return 1.0, np.nan

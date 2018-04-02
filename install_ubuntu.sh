@@ -1,5 +1,8 @@
 sudo apt-get update
 
+#for multiple processes
+sudo apt-get install parallel
+
 sudo apt-get install python
 sudo apt-get install python-setuptools
 
@@ -12,6 +15,7 @@ echo 'export LC_ALL=C' >> ~/.bashrc
 #install requirements
 sudo pip install --no-cache-dir -r requirements.txt
 sudo pip install Cython
+pip install rpy2
 
 #build cython modules
 sudo python setup.py build_ext --inplace
