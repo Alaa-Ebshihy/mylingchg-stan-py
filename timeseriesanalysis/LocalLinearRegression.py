@@ -3,9 +3,7 @@ import numpy
 import statsmodels.api as sm
 from sklearn.neighbors import NearestNeighbors
 from sklearn.base import BaseEstimator
-from statsmodels.sandbox.regression.predstd import wls_prediction_std
 
-import pickle
 
 # Code to pickle a VW model
 import copy_reg

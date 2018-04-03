@@ -5,16 +5,9 @@
 
 from argparse import ArgumentParser
 import logging
-import sys
 from io import open
-import os
-from os import path
-from time import time
-from glob import glob
 from collections import defaultdict
 from copy import deepcopy
-from random import shuffle
-import json
 import cPickle as pickle
 
 from sklearn.linear_model import LinearRegression
@@ -291,6 +284,7 @@ class Evaluator(object):
             norms = (vectors ** 2).sum(axis=0) ** 0.5
             norms[norms == 0] = 1
             out = vectors / norms
+        out = numpy.nan_to_num(out)
         return out
 
     def precision_at_k(self, test_pairs):
