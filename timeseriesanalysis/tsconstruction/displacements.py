@@ -1,21 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from argparse import ArgumentParser
 
 import os
-from os import path
-import cPickle as pickle
 import numpy as np
-import scipy
 import itertools
-from scipy.spatial.distance import cosine, euclidean, norm
+from scipy.spatial.distance import norm
 import pandas as pd
 import more_itertools
 from joblib import Parallel, delayed
-
-from langchangetrack.utils.dummy_regressor import DummyRegressor
-import gensim
 
 import logging
 LOGFORMAT = "%(asctime).19s %(levelname)s %(filename)s: %(lineno)s %(message)s"
