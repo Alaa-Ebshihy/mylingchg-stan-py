@@ -111,12 +111,11 @@ class Displacements(object):
                 word2 = tup[2]
                 timepoint2 = tup[3]
 
-                if self.is_present(timepoint1, word1) and self.is_present(timepoint2, word2):
-                    vec1 = self.get_vector(timepoint1, word1)
-                    vec2 = self.get_vector(timepoint2, word2)
+                vec1 = self.get_vector(timepoint1, word1)
+                vec2 = self.get_vector(timepoint2, word2)
 
-                    vec1 = np.nan_to_num(vec1)
-                    vec2 = np.nan_to_num(vec2)
+                if self.is_present(timepoint1, word1) and self.is_present(timepoint2, word2) \
+                        and not (np.isnan(vec1).any() or np.isnan(vec2).any()):
 
                     if self.norm_embedding:
                         assert(np.isclose(norm(vec1), 1.0))
