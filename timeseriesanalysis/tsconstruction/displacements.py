@@ -122,6 +122,9 @@ class Displacements(object):
                     vec1 = self.get_vector(timepoint1, word1)
                     vec2 = self.get_vector(timepoint2, word2)
 
+                    vec1 = np.nan_to_num(vec1)
+                    vec2 = np.nan_to_num(vec2)
+
                     if self.norm_embedding:
                         assert(np.isclose(norm(vec1), 1.0))
                         assert(np.isclose(norm(vec2), 1.0))
