@@ -3,10 +3,12 @@ import collections
 import cPickle as pickle
 from googlengram.indexing import get_word_indices
 
+
 def words_above_count(count_dir, year, min_count):
     counts = load_pickle(count_dir + str(year) + "-counts.pkl")
     words = sorted([word for word, count in counts.iteritems() if count >= min_count], key = lambda word : -1*counts[word])
     return words
+
 
 def load_target_context_words(years, word_file, num_target, num_context):
     if num_context == 0:
@@ -28,6 +30,7 @@ def load_target_context_words(years, word_file, num_target, num_context):
         context_lists = target_lists = word_lists
     return target_lists, context_lists
 
+
 def load_year_indexes(dir, years):
     if "index.pkl" in os.listdir(dir):
         index = load_pickle(dir + "/index.pkl")
@@ -37,6 +40,7 @@ def load_year_indexes(dir, years):
         for year in years:
             year_indexes[year] = load_pickle(dir + str(year) + "-index.pkl")
     return year_indexes
+
 
 def load_year_index_infos(index_dir, years, word_file, num_words=-1):
     """
@@ -61,6 +65,7 @@ def load_year_index_infos(index_dir, years, word_file, num_words=-1):
         year_index_infos[year]["indices"] = word_indices
     return year_index_infos
 
+
 def load_year_index_infos_common(common_index, years, word_file, num_words=-1):
     """
     Returns dictionary mapping year to:
@@ -81,6 +86,7 @@ def load_year_index_infos_common(common_index, years, word_file, num_words=-1):
         year_index_infos[year]["indices"] = word_indices
     return year_index_infos
 
+
 def load_year_words(word_file, years):
     word_pickle = load_pickle(word_file)
     word_lists = {}
@@ -97,17 +103,21 @@ def load_year_words(word_file, years):
             word_lists[year] = word_list
     return word_lists
 
+
 def mkdir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory) 
+
 
 def write_pickle(data, filename):
     fp = open(filename, "wb")
     pickle.dump(data, fp)
 
+
 def load_pickle(filename):
     fp = open(filename, "rb")
     return pickle.load(fp)
+
 
 def load_word_list(filename):
     fp = open(filename, "r")
@@ -117,8 +127,14 @@ def load_word_list(filename):
     fp.close()
     return words
 
+
 def lines(fname):
     with open(fname) as f:
         for line in f:
             yield line
 
+
+def write_list(filename, list):
+    with open(filename, "w") as fp:
+        for line in list:
+            print >> fp, line.strip().encode("utf-8")
