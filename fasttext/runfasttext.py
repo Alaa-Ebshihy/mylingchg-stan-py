@@ -103,5 +103,5 @@ if __name__ == "__main__":
     years = range(args.start_year, args.end_year + 1, args.year_inc)
     train_years(years, args.in_dir + "/", out_dir, args.workers, args.model, args.lr, args.dim, args.epoch, args.bucket
                 , args.loss, args.wordNgrams, args.minn, args.maxn, args.sequential, args.pretrained,
-                args.pretrained_dir)
+                args.pretrained_dir + "/")
 

@@ -137,4 +137,16 @@ def lines(fname):
 def write_list(filename, list):
     with open(filename, "w") as fp:
         for line in list:
-            print >> fp, line.strip().encode("utf-8")
+            try:
+                print >> fp, line.strip().encode("utf-8")
+            except:
+                pass
+
+
+
+def load_word_pairs(in_file):
+    with open(in_file) as f:
+        file_lines = f.read().splitlines()
+        col1 = [ line.split()[0] for line in file_lines]
+        col2 = [ line.split()[1] for line in file_lines]
+    return col1, col2

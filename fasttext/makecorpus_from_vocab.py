@@ -41,7 +41,7 @@ def worker(proc_num, queue, out_dir, in_dir, count_dir, vocab_dir, sample=1e-5):
                 word = word.encode("utf-8")
                 context = context.encode("utf-8")
                 line = word + " " + context + "\n"
-                for j in xrange(int(mat.data[i] * prop_keep)):
+                for j in xrange(int(np.ceil(mat.data[i] * prop_keep))):
                     fp.write(line)
         print "shuf " + out_dir + str(year) + ".tmp.txt" " > " + out_dir + str(year) + ".txt"
         os.system("shuf " + out_dir + str(year) + ".tmp.txt" + " > " + out_dir + str(year) + ".txt")
@@ -72,4 +72,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
     years = range(args.start_year, args.end_year + 1, args.year_inc)
     ioutils.mkdir(args.out_dir)
-    run_parallel(args.workers, args.out_dir + "/", args.in_dir + "/", args.count_dir + "/", years, args.vocab_dir, args.sample)
+    run_parallel(args.workers, args.out_dir + "/", args.in_dir + "/", args.count_dir + "/", years, args.vocab_dir,
+                 args.sample)

@@ -15,8 +15,6 @@ def main(in_file, out_file):
 			print >>fp, q
 
 def load_vocabulary(in_file):
-    col1 = []
-    col2 = []
     with open(in_file) as f:
         lines = f.read().splitlines()
         col1 = [ line.split()[0] for line in lines]

@@ -1,0 +1,4 @@
+gay 	homosexual
+gay 	lesbian
+gay 	happy
+gay 	showy

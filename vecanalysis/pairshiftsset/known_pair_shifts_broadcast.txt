@@ -1,0 +1,4 @@
+broadcast 	transmit
+broadcast 	radio
+broadcast 	scatter
+broadcast 	seed

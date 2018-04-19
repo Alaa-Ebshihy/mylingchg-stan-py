@@ -1,0 +1,4 @@
+fatal	 	illness
+fatal	 	lethal
+fatal	 	fate
+fatal	 	inevitable

@@ -3,6 +3,7 @@ from multiprocessing import Queue, Process
 from argparse import ArgumentParser
 
 from ioutils import load_pickle
+import ioutils
 
 
 def worker(proc_num, queue, vec_path):
@@ -19,7 +20,7 @@ def numpy2text(vec_path, year, extension):
     w_mat = np.load(vec_path + str(year) + "-w.npy")
     vocab_size = len(vocab_list)
     dim = len(w_mat[0])
-    iw = []
+    ioutils.write_list(vec_path + str(year) + ".vocab", vocab_list)
     with open(vec_path + str(year) + "-w" + extension, "w") as fp:
         print >> fp, str(vocab_size), str(dim)
         for i, w in enumerate(vocab_list):

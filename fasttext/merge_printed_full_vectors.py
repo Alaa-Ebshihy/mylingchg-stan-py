@@ -42,7 +42,7 @@ def write_merged_vectors(year, train_dir, out_dir, extra_vectors, out_vec_suffix
         vocab_size = int(info[0]) + len(extra_vectors)
         dim = int(info[1])
 
-        with open(out_dir + str(year) + out_vec_suffix, "w") as fwp:
+        with open(out_dir + str(year) +"-"+ out_vec_suffix, "w") as fwp:
             print >> fwp, vocab_size, dim
             for line in fp:
                 print >> fwp, line.strip()
