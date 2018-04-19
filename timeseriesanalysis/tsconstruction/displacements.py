@@ -1,14 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from argparse import ArgumentParser
 
 import os
+from os import path
+import cPickle as pickle
 import numpy as np
+import scipy
 import itertools
-from scipy.spatial.distance import norm
+from scipy.spatial.distance import cosine, euclidean, norm
 import pandas as pd
 import more_itertools
 from joblib import Parallel, delayed
+
+from langchangetrack.utils.dummy_regressor import DummyRegressor
+import gensim
 
 import logging
 LOGFORMAT = "%(asctime).19s %(levelname)s %(filename)s: %(lineno)s %(message)s"
@@ -111,11 +118,9 @@ class Displacements(object):
                 word2 = tup[2]
                 timepoint2 = tup[3]
 
-                vec1 = self.get_vector(timepoint1, word1)
-                vec2 = self.get_vector(timepoint2, word2)
-
-                if self.is_present(timepoint1, word1) and self.is_present(timepoint2, word2) \
-                        and not (np.isnan(vec1).any() or np.isnan(vec2).any()):
+                if self.is_present(timepoint1, word1) and self.is_present(timepoint2, word2):
+                    vec1 = self.get_vector(timepoint1, word1)
+                    vec2 = self.get_vector(timepoint2, word2)
 
                     if self.norm_embedding:
                         assert(np.isclose(norm(vec1), 1.0))
