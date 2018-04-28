@@ -24,13 +24,15 @@ def worker(proc_num, queue, out_dir, train_dir, vec_suffix, lang):
 
 def clean_vectors(year, train_dir, vec_suffix, lang):
     stop_set = set(stopwords.words(lang))
+    print(stop_set)
     cleaned_vectors = []
     vocab = ioutils.load_pickle(train_dir + VOCAB_FILE.format(year=year))
-    print_vectors = load_file_lines(train_dir + str(year) + vec_suffix)
+    print_vectors = load_file_lines(train_dir + str(year) + "-" + vec_suffix)
 
     for i, w in enumerate(vocab):
-        if not w in stop_set or not w.isalpha():
-            cleaned_vectors.append(print_vectors[i + 1])
+        if is_zero_vectors(print_vectors[i + 1].split()[1:]) or w in stop_set or not w.isalpha():
+            continue
+        cleaned_vectors.append(print_vectors[i + 1])
     return cleaned_vectors
 
 
@@ -38,6 +40,13 @@ def load_file_lines(queries_file):
     with open(queries_file) as f:
         lines = f.read().splitlines()
     return lines
+
+
+def is_zero_vectors(vector):
+    for v in vector:
+        if float(v) > 1e-10:
+            return False
+    return True
 
 
 def write_vectors(year, out_dir, cleaned_vectors, vec_suffix):
