@@ -30,11 +30,11 @@ def get_common_vocab(in_dir, out_dir, out_file_name, in_suffix, years, n_vocab, 
         else:
             common_vocab = common_vocab & file_vocab
         # f.close()
-    data_bern = bernoulli.rvs(size=len(common_vocab), p=float(n_vocab / len(common_vocab)))
+    data_bern = bernoulli.rvs(size=len(common_vocab), p=float(n_vocab) / len(common_vocab))
 
     common_vocab_list = list(common_vocab)
     random_common_vocab = set()
-    for i, idx in enumerate(data_bern):
+    for idx, i in enumerate(data_bern):
         if i == 1:
             random_common_vocab.add(common_vocab_list[idx])
     random_common_vocab = random_common_vocab.union(set(ioutils.load_word_list(donor_path)).union(ioutils.load_word_list(receptor_path)))
