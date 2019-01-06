@@ -17,19 +17,24 @@ LOGFORMAT = "%(asctime).19s %(levelname)s %(filename)s: %(lineno)s %(message)s"
 def get_common_vocab(in_dir, out_dir, out_file_name, in_suffix, years):
     common_vocab = None
     for year in years:
-        file_vocab = set()
-        f = open(in_dir + str(year) + in_suffix)
-        for line in f:
-            for sent in nltk.sent_tokenize(line):
-                for word in nltk.word_tokenize(sent):
-                    file_vocab.add(word)
-        if common_vocab == None:
+        file_vocab = set(read_corpus_to_list(in_dir + str(year) + in_suffix))
+        # f = open(in_dir + str(year) + in_suffix)
+        # for line in f:
+        #     for sent in nltk.sent_tokenize(line):
+        #         for word in nltk.word_tokenize(sent):
+        #             file_vocab.add(word)
+        if common_vocab is None:
             common_vocab = file_vocab
         else:
             common_vocab = common_vocab & file_vocab
-        f.close()
+        # f.close()
 
     ioutils.write_list(out_dir + out_file_name, list(common_vocab))
+
+
+def read_corpus_to_list(corpus_file_path):
+    with open(corpus_file_path) as f:
+        return [word for line in f for word in line.split()]
 
 
 if __name__ == "__main__":
