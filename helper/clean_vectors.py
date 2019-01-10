@@ -24,15 +24,18 @@ def worker(proc_num, queue, out_dir, train_dir, vec_suffix, lang):
 
 def clean_vectors(year, train_dir, vec_suffix, lang):
     stop_set = set(stopwords.words(lang))
-    print(stop_set)
     cleaned_vectors = []
     vocab = ioutils.load_pickle(train_dir + VOCAB_FILE.format(year=year))
     print_vectors = load_file_lines(train_dir + str(year) + "-" + vec_suffix)
+    vocab_vec_dict = get_vocab_vec_dict(print_vectors)
 
     for i, w in enumerate(vocab):
-        if is_zero_vectors(print_vectors[i + 1].split()[1:]) or w in stop_set or not w.isalpha():
+        if w not in vocab_vec_dict:
             continue
-        cleaned_vectors.append(print_vectors[i + 1])
+        w_vec = vocab_vec_dict.get(w)
+        if is_zero_vectors(w_vec.split()[1:]) or w in stop_set or not w.isalpha():
+            continue
+        cleaned_vectors.append(w_vec)
     return cleaned_vectors
 
 
@@ -40,6 +43,13 @@ def load_file_lines(queries_file):
     with open(queries_file) as f:
         lines = f.read().splitlines()
     return lines
+
+
+def get_vocab_vec_dict(vectors):
+    vocab_vec_dict = {}
+    for v in vectors:
+        vocab_vec_dict[v.split()[0]] = v
+    return vocab_vec_dict
 
 
 def is_zero_vectors(vector):
