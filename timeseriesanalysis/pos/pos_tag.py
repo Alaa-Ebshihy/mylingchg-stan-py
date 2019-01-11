@@ -12,6 +12,8 @@ from textblob_aptagger import PerceptronTagger
 from collections import Counter
 import numpy as np
 import pandas as pd
+import ioutils
+
 
 __author__ = "Vivek Kulkarni"
 __email__ = "viveksck@gmail.com"
@@ -20,11 +22,12 @@ LOGFORMAT = "%(asctime).19s %(levelname)s %(filename)s: %(lineno)s %(message)s"
 
 
 def main(args):
-    f = open(args.filename)
+    lines = ioutils.load_word_list(args.filename)
+    # f = open(args.filename)
     D = {}
     tag_set = set([])
     tb = Blobber(pos_tagger=PerceptronTagger())
-    for i, line in enumerate(f):
+    for i, line in enumerate(lines):
         b1 = tb(line)
         for w, t in b1.tags:
             tag_set.add(t)
